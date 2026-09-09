@@ -86,8 +86,20 @@ from taqueria import (
 #
 #   strict=True stops Pydantic from converting values between types, so the
 #   text "3" will no longer be quietly accepted as the number 3.
+
+# ***********ANSWER*************
 class BurritoOrder(BaseModel):
-    ...  # <-- your code here (TODO 3)
+    # ...  # <-- your code here (TODO 3)
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    item: Literal["burrito", "taco", "bowl"]
+    quantity: int = Field(ge=1, le=20)
+    spice: Literal["mild", "medium", "hot"]
+    notes: str = Field(default="", max_length=200)
+
+
+
+    
 
 
 def parse_order(raw: str) -> tuple[BurritoOrder | None, str | None]:
@@ -120,8 +132,16 @@ def parse_order(raw: str) -> tuple[BurritoOrder | None, str | None]:
     # Catch it and return the reason as a string instead of letting the
     # exception travel further up. `first_error` below turns a ValidationError
     # into one short line for you.
-    raise NotImplementedError("TODO 4 -- see the comment above")
 
+    # raise NotImplementedError("TODO 4 -- see the comment above")
+
+    # ***********ANSWER*************
+    # Validate input
+    try:
+        order = BurritoOrder.model_validate_json(raw)
+        return order, None
+    except ValidationError as exc:
+        return None, first_error(exc)
 
 def first_error(exc: ValidationError) -> str:
     """Describe the first thing Pydantic objected to, in one short line.

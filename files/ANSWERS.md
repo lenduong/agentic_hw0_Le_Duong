@@ -1,7 +1,7 @@
 # HW 0 — Answers
 
-Name:
-USC email:
+Name:Le Duong
+USC email: lnduong@usc.edu
 
 Six short questions. One or two sentences each is enough; nobody is looking for
 an essay. These matter more than they look: the code shows you can use Pydantic,
@@ -18,6 +18,9 @@ it should not have been. Which one is it, and why did the `ESCAPED` counter not
 notice it?
 
 > *your answer here*
+The 3rd ACCEPTED reply is "smuggled-in extra field", which the ESCAPED counter didn't notice because
+the counter's dependent on the function is_actually_dangerous(), which only account for if 
+an order is below 1 or above 20. So it doesn't consider adding an extra field as dangerous.
 
 ---
 
@@ -30,6 +33,11 @@ Which behaviour do you want in an agent, and why? Either answer is acceptable if
 you defend it.
 
 > *your answer here*
+I think for this particular tacobot case, you should want the agent to accept both string and int because
+when it comes to order amount, it doesn't really matter too much because we would just convert it to an int.
+Howvever, if we were to accidentally assume the input is an int, then an expression like 
+"2"*5 now becomes "22222" instead of 10 like intended. So if we don't want absolutely any chances of such
+mistake happening, we should not allow string as number input.
 
 ---
 
@@ -43,9 +51,9 @@ two would also have caught it.
 
 | reply | rejected by | would the others catch it? |
 |---|---|---|
-| `{"item":"taco","quantity":"3","spice":"hot"}` | | |
-| `{"item":"taco","quantity":0,"spice":"hot"}` | | |
-| `{"item":"taco","quantity":1,"spice":"hot","price_override":0}` | | |
+| `{"item":"taco","quantity":"3","spice":"hot"}` |strict=True| No, pydantic converts the string into int, and there's no extra field|
+| `{"item":"taco","quantity":0,"spice":"hot"}` |Field(ge=0)|No, the quantity is type int so it'd pass for strict=True and there's no extra field|
+| `{"item":"taco","quantity":1,"spice":"hot","price_override":0}` |extra="forbid"|No, quantity satisfy both Field and Strict configs, but neither of those two check for extra fields|
 
 ---
 
@@ -98,6 +106,6 @@ paste your --live output here
 Three bullets, as required by the course AI policy. You do not need to list
 prompts or coding assistants.
 
-1. Model(s) used by the submitted code:
-2. How you tested this submission:
-3. One known failure or limitation, or "none found":
+1. Model(s) used by the submitted code: ChatGPT 5.6
+2. How you tested this submission: I ran the files on my WSL2, I only use AI to understand how to use Pydantic
+3. One known failure or limitation, or "none found": none found
